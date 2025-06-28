@@ -5,6 +5,6 @@ git remote add origin <YOUR_REPOSITORY_URL>
 //update
 git add .
 
-git commit -m "get user todos"
+git commit -m "fix prisma and seed"
 
 git push origin main
