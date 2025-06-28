@@ -1,0 +1,10 @@
+git init
+
+git remote add origin <YOUR_REPOSITORY_URL>
+
+//update
+git add .
+
+git commit -m "get user todos"
+
+git push origin main

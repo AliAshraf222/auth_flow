@@ -1,22 +1,11 @@
-/*
-  Warnings:
-
-  - You are about to drop the column `name` on the `users` table. All the data in the column will be lost.
-
-*/
 -- CreateEnum
 CREATE TYPE "AuthProvider" AS ENUM ('EMAIL_PASSWORD', 'GOOGLE', 'GITHUB');
 
 -- CreateEnum
-CREATE TYPE "Priority" AS ENUM ('LOW', 'MEDIUM', 'HIGH');
+CREATE TYPE "Role" AS ENUM ('ADMIN', 'USER');
 
--- AlterTable
-ALTER TABLE "users" DROP COLUMN "name",
-ADD COLUMN     "firstName" TEXT,
-ADD COLUMN     "isEmailVerified" BOOLEAN NOT NULL DEFAULT false,
-ADD COLUMN     "lastName" TEXT,
-ADD COLUMN     "provider" "AuthProvider" NOT NULL DEFAULT 'EMAIL_PASSWORD',
-ALTER COLUMN "password" DROP NOT NULL;
+-- CreateEnum
+CREATE TYPE "Priority" AS ENUM ('LOW', 'MEDIUM', 'HIGH');
 
 -- CreateTable
 CREATE TABLE "VerificationToken" (
@@ -76,6 +65,22 @@ CREATE TABLE "Todo" (
     CONSTRAINT "Todo_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "users" (
+    "id" TEXT NOT NULL,
+    "firstName" TEXT,
+    "lastName" TEXT,
+    "email" TEXT NOT NULL,
+    "password" TEXT,
+    "isEmailVerified" BOOLEAN NOT NULL DEFAULT false,
+    "provider" "AuthProvider" NOT NULL DEFAULT 'EMAIL_PASSWORD',
+    "role" "Role" NOT NULL DEFAULT 'USER',
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "users_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "VerificationToken_token_key" ON "VerificationToken"("token");
 
@@ -102,6 +107,9 @@ CREATE INDEX "PasswordResetToken_userId_idx" ON "PasswordResetToken"("userId");
 
 -- CreateIndex
 CREATE INDEX "Todo_userId_idx" ON "Todo"("userId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 
 -- AddForeignKey
 ALTER TABLE "VerificationToken" ADD CONSTRAINT "VerificationToken_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
